@@ -2,7 +2,7 @@
 
 // ******* GLOBALS *******
 let productArray = [];
-let votingRounds = 15;
+let votingRounds = 25;
 
 
 //  ****** DOM WINDOWS *******
@@ -12,7 +12,7 @@ let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 
 let resultsBtn = document.getElementById('show-results-btn');
-let resultsList = document.getElementById('results-container');
+// let resultsList = document.getElementById('results-container');
 
 
 // ***** CONSTRUCTOR FUNCTION ******
@@ -21,23 +21,30 @@ function Product(name, imgExtension = 'jpg') {
   this.img = `img/${name}.${imgExtension}`;
   this.votes = 0;
   this.views = 0;
+  Product.productArray.push(this);
 }
+
+Product.productArray = [];
 
 // ***** HELPER FUNCTIONS / UTILITIES *****
 function randomIndex() {
   return Math.floor(Math.random() * productArray.length);
 }
 
+let indexArray = [];
 function renderImg() {
-  let imgOneIndex = randomIndex();
-  let imgTwoIndex = randomIndex();
-  let imgThreeIndex = randomIndex();
 
-  while (imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
-
-    imgTwoIndex = randomIndex();
-    imgThreeIndex = randomIndex();
+  while (indexArray.length < 6) {
+    let randoNum = randomIndex();
+    if (!indexArray.includes(randoNum)) {
+      indexArray.push(randoNum);
+    }
   }
+
+
+  let imgOneIndex = indexArray.shift();
+  let imgTwoIndex = indexArray.shift();
+  let imgThreeIndex = indexArray.shift();
 
   imgOne.src = productArray[imgOneIndex].img;
   imgTwo.src = productArray[imgTwoIndex].img;
@@ -70,20 +77,80 @@ function handleClick(event) {
 
   if (votingRounds === 0) {
     imgContainer.removeEventListener('click', handleClick);
+    renderChart();
   }
 }
 
-function handleShowResults() {
-  if (votingRounds === 0) {
-    for (let i = 0; i < productArray.length; i++) {
-      let liElem = document.createElement('li');
-      liElem.textContent = `${productArray[i].name} - views: ${productArray[i].views} & votes: ${productArray[i].votes}`;
-      resultsList.appendChild(liElem);
-    }
-    resultsBtn.removeEventListener('click', handleShowResults);
+// function handleShowResults() {
+//   if (votingRounds === 0) {
+//     for (let i = 0; i < productArray.length; i++) {
+//       let liElem = document.createElement('li');
+//       liElem.textContent = `${productArray[i].name} - views: ${productArray[i].views} & votes: ${productArray[i].votes}`;
+//       resultsList.appendChild(liElem);
+//     }
+//     resultsBtn.removeEventListener('click', handleShowResults);
+//   }
+
+// }
+
+
+// *******************
+
+function renderChart() {
+  let productNames = [];
+  let productVotes = [];
+  let productViews = [];
+  for (let i = 0; i < Product.productArray.length; i++) {
+    productNames.push(Product.productArray[i].name);
+    productVotes.push(Product.productArray[i].votes);
+    productViews.push(Product.productArray[i].views);
   }
 
+  // resultsBtn.removeEventListener('click', renderChart);
+
+  const data = {
+    labels: productNames,
+    datasets: [{
+      label: 'Likes',
+      data: productVotes,
+      backgroundColor: [
+        'hsl(11, 52%, 45%)'
+      ],
+      borderColor: [
+        'rgb(255, 99, 132)'
+      ],
+      borderWidth: 2
+    },
+    {
+      label: 'Views',
+      data: productViews,
+      backgroundColor: [
+        'rgb(243, 251, 151)'
+      ],
+      borderColor: [
+        'rgb(255, 159, 64)'
+      ],
+      borderWidth: 2
+    }]
+  };
+
+  const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    },
+  };
+  let canvasChart = document.getElementById('myChart');
+  
+  const myChart = new Chart(canvasChart, config);
 }
+
+
 
 // **** EXECUTABLE CODE *****
 const bag = new Product('bag');
@@ -111,6 +178,6 @@ productArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cth
 renderImg();
 
 imgContainer.addEventListener('click', handleClick);
-resultsBtn.addEventListener('click', handleShowResults);
+// resultsBtn.addEventListener('click', renderChart);
 
 console.log(productArray);
