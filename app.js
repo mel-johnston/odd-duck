@@ -11,10 +11,6 @@ let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 
-let resultsBtn = document.getElementById('show-results-btn');
-// let resultsList = document.getElementById('results-container');
-
-
 // ***** CONSTRUCTOR FUNCTION ******
 function Product(name, imgExtension = 'jpg') {
   this.name = name;
@@ -40,7 +36,6 @@ function renderImg() {
       indexArray.push(randoNum);
     }
   }
-
 
   let imgOneIndex = indexArray.shift();
   let imgTwoIndex = indexArray.shift();
@@ -80,19 +75,6 @@ function handleClick(event) {
     renderChart();
   }
 }
-
-// function handleShowResults() {
-//   if (votingRounds === 0) {
-//     for (let i = 0; i < productArray.length; i++) {
-//       let liElem = document.createElement('li');
-//       liElem.textContent = `${productArray[i].name} - views: ${productArray[i].views} & votes: ${productArray[i].votes}`;
-//       resultsList.appendChild(liElem);
-//     }
-//     resultsBtn.removeEventListener('click', handleShowResults);
-//   }
-
-// }
-
 
 // *******************
 
@@ -146,11 +128,8 @@ function renderChart() {
     },
   };
   let canvasChart = document.getElementById('myChart');
-  
   const myChart = new Chart(canvasChart, config);
 }
-
-
 
 // **** EXECUTABLE CODE *****
 const bag = new Product('bag');
@@ -163,7 +142,7 @@ const chair = new Product('chair');
 const cthulhu = new Product('cthulhu');
 const dogDuck = new Product('dog-duck');
 const dragon = new Product('dragon');
-const pen = new Product('pen',);
+const pen = new Product('pen');
 const petSweep = new Product('pet-sweep');
 const scissors = new Product('scissors');
 const shark = new Product('shark');
