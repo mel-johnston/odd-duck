@@ -1,17 +1,20 @@
 'use strict';
 
-// ******* GLOBALS *******
+// ********** GLOBALS **********
+
 let productArray = [];
 let votingRounds = 25;
 
 
-//  ****** DOM WINDOWS *******
+//  ********** DOM WINDOWS **********
+
 let imgContainer = document.getElementById('img-container');
 let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 
-// ***** CONSTRUCTOR FUNCTION ******
+// ********** CONSTRUCTOR FUNCTION **********
+
 function Product(name, imgExtension = 'jpg') {
   this.name = name;
   this.img = `img/${name}.${imgExtension}`;
@@ -22,7 +25,8 @@ function Product(name, imgExtension = 'jpg') {
 
 Product.productArray = [];
 
-// ***** HELPER FUNCTIONS / UTILITIES *****
+// ********** HELPER FUNCTIONS / UTILITIES **********
+
 function randomIndex() {
   return Math.floor(Math.random() * productArray.length);
 }
@@ -56,10 +60,10 @@ function renderImg() {
   productArray[imgThreeIndex].views++;
 }
 
-// **** EVENT HANDLERS *****
+// ********** EVENT HANDLERS **********
+
 function handleClick(event) {
   let imgClicked = event.target.title;
-  console.log(imgClicked);
 
   for (let i = 0; i < productArray.length; i++) {
     if (imgClicked === productArray[i].name) {
@@ -73,10 +77,14 @@ function handleClick(event) {
   if (votingRounds === 0) {
     imgContainer.removeEventListener('click', handleClick);
     renderChart();
+
+    // ********** LOCAL STORAGE STARTS HERE **********
+
+    let stringifiedProducts = JSON.stringify(productArray);
+    localStorage.setItem('myProducts', stringifiedProducts);
+
   }
 }
-
-// *******************
 
 function renderChart() {
   let productNames = [];
@@ -87,8 +95,6 @@ function renderChart() {
     productVotes.push(Product.productArray[i].votes);
     productViews.push(Product.productArray[i].views);
   }
-
-  // resultsBtn.removeEventListener('click', renderChart);
 
   const data = {
     labels: productNames,
@@ -131,7 +137,11 @@ function renderChart() {
   const myChart = new Chart(canvasChart, config);
 }
 
-// **** EXECUTABLE CODE *****
+// ********** EXECUTABLE CODE **********
+
+let retrievedProducts = localStorage.getItem('myProducts');
+let parsedProducts = JSON.parse(retrievedProducts);
+
 const bag = new Product('bag');
 const banana = new Product('banana');
 const bathroom = new Product('bathroom');
@@ -154,9 +164,12 @@ const wineGlass = new Product('wine-glass');
 
 productArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulhu, dogDuck, dragon, pen, petSweep, scissors, shark, sweep, tauntaun, unicorn, waterCan, wineGlass);
 
+if (parsedProducts) {
+  for (let i = 0; i < productArray.length; i++){
+    productArray[i].votes = parsedProducts[i].votes;
+    productArray[i].views = parsedProducts[i].views;
+  }
+}
+
 renderImg();
-
 imgContainer.addEventListener('click', handleClick);
-// resultsBtn.addEventListener('click', renderChart);
-
-console.log(productArray);
