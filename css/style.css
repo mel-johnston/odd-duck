@@ -63,6 +63,7 @@ div>p {
   -webkit-box-shadow: 0px 0px 108px -8px rgba(174, 77, 55, 0.79);
   -moz-box-shadow: 0px 0px 108px -8px rgba(174, 77, 55, 0.79);
   border: 5px solid hsl(11, 52%, 45%);
+  cursor: url('duck-cursor.png'), auto;
 }
 
 canvas {
